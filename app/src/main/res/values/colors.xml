@@ -3,4 +3,11 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="table">#202F7F</color>
+    <color name="card_back">#333</color>
+    <color name="card_front">#777</color>
+    <color name="card_match">#33F</color>
+    <color name="card_not_match">#A33</color>
+    <color name="card_text">#FFF</color>
 </resources>
