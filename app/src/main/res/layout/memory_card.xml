@@ -1,28 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_margin="8dp"
-    android:background="@color/card_back"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="4dp"
     app:layout_columnWeight="1"
     app:layout_rowWeight="1">
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/letter"
+    <FrameLayout
+        android:id="@+id/card_front"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
+        android:background="@color/card_front">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/letter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/card_text"
+            app:autoSizeMaxTextSize="100sp"
+            app:autoSizeMinTextSize="10sp"
+            app:autoSizeStepGranularity="4sp"
+            app:autoSizeTextType="uniform" />
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/card_back"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/card_back" />
+
+    <TextView
+        android:id="@+id/card_notice_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
         android:gravity="center"
-        android:textColor="@color/card_text"
-        android:visibility="invisible"
-        app:autoSizeMaxTextSize="100sp"
-        app:autoSizeMinTextSize="10sp"
-        app:autoSizeStepGranularity="4sp"
-        app:autoSizeTextType="uniform" />
-</LinearLayout>
+        android:textSize="20sp" />
+</FrameLayout>

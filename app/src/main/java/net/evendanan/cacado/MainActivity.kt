@@ -1,5 +1,7 @@
 package net.evendanan.cacado
 
+import android.animation.AnimatorInflater
+import android.content.Context
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.support.annotation.RawRes
@@ -14,6 +16,31 @@ import android.widget.TextView
 import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
+
+    private class RevealHideCardHandler(context: Context, rootView: View, val memoryCard: MemoryCard) {
+        private val cardFront = rootView.findViewById<View>(R.id.card_front)
+        private val cardBack = rootView.findViewById<View>(R.id.card_back)
+        private val letter = rootView.findViewById<View>(R.id.letter)
+        private val revealCardAnimation = AnimatorInflater.loadAnimator(context, R.animator.reveal_card_animation_on_y)
+        private val hideCardAnimation = AnimatorInflater.loadAnimator(context, R.animator.hide_card_animation_on_y)
+
+        fun showCard(withLetter: Boolean) {
+            letter.visibility = if (withLetter) View.VISIBLE else View.INVISIBLE
+
+            hideCardAnimation.setTarget(cardBack)
+            revealCardAnimation.setTarget(cardFront)
+            hideCardAnimation.start()
+            revealCardAnimation.start()
+
+        }
+
+        fun hideCard() {
+            hideCardAnimation.setTarget(cardFront)
+            revealCardAnimation.setTarget(cardBack)
+            hideCardAnimation.start()
+            revealCardAnimation.start()
+        }
+    }
 
     private var viewConnector: ViewBinder = object : ViewBinder {
 
@@ -36,7 +63,7 @@ class MainActivity : AppCompatActivity() {
                         findViewById<TextView>(R.id.letter).text = memoryCard.text
                         setOnClickListener { game.onPlayerClicked(index) }
                         gridLayout.addView(this)
-                        tag = memoryCard
+                        tag = RevealHideCardHandler(applicationContext, this, memoryCard)
                     }
                 }
             }
@@ -44,16 +71,15 @@ class MainActivity : AppCompatActivity() {
 
         override fun showCard(index: Int, withLetter: Boolean, withAudio: Boolean) {
             gridLayout.getChildAt(index).run {
-                if (withLetter) findViewById<TextView>(R.id.letter).visibility = View.VISIBLE
-                if (withAudio) playAudio((this.tag as MemoryCard).audio)
-                setBackgroundColor(colorCardFrontColor)
+                val handler = this.tag as RevealHideCardHandler
+                handler.showCard(withLetter)
+                if (withAudio) playAudio(handler.memoryCard.audio)
             }
         }
 
         override fun hideCard(index: Int) {
             gridLayout.getChildAt(index).run {
-                findViewById<TextView>(R.id.letter).visibility = View.INVISIBLE
-                setBackgroundColor(colorCardBackColor)
+                (this.tag as RevealHideCardHandler).hideCard()
                 mediaPlayer.release()
             }
         }
@@ -78,17 +104,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var gridLayout: GridLayout
     private var colorHighlightMatch = 0
     private var colorHighlightNotMatch = 0
-    private var colorCardBackColor = 0
-    private var colorCardFrontColor = 0
+
     private var mediaPlayer = MediaPlayer()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         colorHighlightMatch = ResourcesCompat.getColor(resources, R.color.card_match, theme)
         colorHighlightNotMatch = ResourcesCompat.getColor(resources, R.color.card_not_match, theme)
-        colorCardBackColor = ResourcesCompat.getColor(resources, R.color.card_back, theme)
-        colorCardFrontColor = ResourcesCompat.getColor(resources, R.color.card_front, theme)
 
         setContentView(R.layout.activity_main)
 
