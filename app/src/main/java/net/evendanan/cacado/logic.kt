@@ -9,7 +9,8 @@ interface ViewBinder {
 
     enum class HighlightType {
         Match,
-        NotMatch
+        NotMatch,
+        None
     }
 
     fun showWinMessage()
@@ -29,8 +30,9 @@ class Game(private val dealer: Dealer, private val viewBinder: ViewBinder) {
         if (dealtCards.isEmpty()) throw IllegalArgumentException("Cards list can not be empty")
         val cardsCounter = HashMap<MemoryCard, Int>()
         dealtCards.forEach {
-            if (cardsCounter.containsKey(it)) {
-                cardsCounter[it] = cardsCounter[it]!!.plus(1)
+            val currentCount = cardsCounter[it]
+            if (currentCount != null) {
+                cardsCounter[it] = currentCount.inc()
             } else {
                 cardsCounter[it] = 1
             }
@@ -49,6 +51,7 @@ class Game(private val dealer: Dealer, private val viewBinder: ViewBinder) {
             mCardsInPlay.forEach {
                 mOpenCards.remove(it)
                 viewBinder.hideCard(it)
+                viewBinder.highlightCard(it, ViewBinder.HighlightType.None)
             }
             mCardsInPlay.clear()
         } else if (!mOpenCards.contains(index)) {
@@ -58,7 +61,7 @@ class Game(private val dealer: Dealer, private val viewBinder: ViewBinder) {
 
             when (mCardsInPlay.pairMatch()) {
                 Game.PlayResult.Match -> {
-                    mCardsInPlay.forEach { viewBinder.highlightCard(it, ViewBinder.HighlightType.Match) }
+                    viewBinder.highlightCard(mCardsInPlay.last(), ViewBinder.HighlightType.Match)
                     if (mOpenCards.size == cards.size) {
                         viewBinder.showWinMessage()
                         viewBinder.keepScreenAwake(false)
@@ -66,7 +69,7 @@ class Game(private val dealer: Dealer, private val viewBinder: ViewBinder) {
 
                     mCardsInPlay.clear()
                 }
-                Game.PlayResult.NotMatch -> mCardsInPlay.forEach { viewBinder.highlightCard(it, ViewBinder.HighlightType.NotMatch) }
+                Game.PlayResult.NotMatch -> viewBinder.highlightCard(mCardsInPlay.last(), ViewBinder.HighlightType.NotMatch)
                 else -> {
                 }
             }

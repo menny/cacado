@@ -26,6 +26,8 @@ private fun cards(letters: String, audios: List<Int>): List<MemoryCard> {
     return cards
 }
 
+object NoDealer : CardsDealer(0, ::emptyList)
+
 class HebrewCards(maxLetters: Int) : CardsDealer(maxLetters, {
     cards(
             "אבגדהוזחטיכלמנסעפצקרשת",

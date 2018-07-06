@@ -1,46 +1,19 @@
-package net.evendanan.cacado
+package net.evendanan.cacado.ui
 
-import android.animation.AnimatorInflater
-import android.content.Context
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.support.annotation.RawRes
-import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayout
 import android.view.Gravity
-import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import net.evendanan.cacado.*
+
 
 class MainActivity : AppCompatActivity() {
-
-    private class RevealHideCardHandler(context: Context, rootView: View, val memoryCard: MemoryCard) {
-        private val cardFront = rootView.findViewById<View>(R.id.card_front)
-        private val cardBack = rootView.findViewById<View>(R.id.card_back)
-        private val letter = rootView.findViewById<View>(R.id.letter)
-        private val revealCardAnimation = AnimatorInflater.loadAnimator(context, R.animator.reveal_card_animation_on_y)
-        private val hideCardAnimation = AnimatorInflater.loadAnimator(context, R.animator.hide_card_animation_on_y)
-
-        fun showCard(withLetter: Boolean) {
-            letter.visibility = if (withLetter) View.VISIBLE else View.INVISIBLE
-
-            hideCardAnimation.setTarget(cardBack)
-            revealCardAnimation.setTarget(cardFront)
-            hideCardAnimation.start()
-            revealCardAnimation.start()
-
-        }
-
-        fun hideCard() {
-            hideCardAnimation.setTarget(cardFront)
-            revealCardAnimation.setTarget(cardBack)
-            hideCardAnimation.start()
-            revealCardAnimation.start()
-        }
-    }
 
     private var viewConnector: ViewBinder = object : ViewBinder {
 
@@ -85,10 +58,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun highlightCard(index: Int, type: ViewBinder.HighlightType) {
-            gridLayout.getChildAt(index).setBackgroundColor(when (type) {
-                ViewBinder.HighlightType.Match -> colorHighlightMatch
-                ViewBinder.HighlightType.NotMatch -> colorHighlightNotMatch
-            })
+            gridLayout.getChildAt(index).run {
+                (this.tag as RevealHideCardHandler).highlightCard(type)
+            }
         }
 
         override fun showWinMessage() {
@@ -96,27 +68,26 @@ class MainActivity : AppCompatActivity() {
                 setGravity(Gravity.CENTER, 0, 0)
                 show()
             }
+            
+            for (childIndex in 0 until gridLayout.childCount) {
+                (gridLayout.getChildAt(childIndex).tag as RevealHideCardHandler).highlightCard(ViewBinder.HighlightType.Match)
+            }
         }
     }
 
-    private var game = Game(HebrewCards(6), viewConnector)
+    private var game = Game(NoDealer, viewConnector)
 
     private lateinit var gridLayout: GridLayout
-    private var colorHighlightMatch = 0
-    private var colorHighlightNotMatch = 0
 
     private var mediaPlayer = MediaPlayer()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        colorHighlightMatch = ResourcesCompat.getColor(resources, R.color.card_match, theme)
-        colorHighlightNotMatch = ResourcesCompat.getColor(resources, R.color.card_not_match, theme)
-
         setContentView(R.layout.activity_main)
 
         findViewById<Button>(R.id.start_button).setOnClickListener {
+            game = Game(HebrewCards(6), viewConnector)
             game.start()
         }
 

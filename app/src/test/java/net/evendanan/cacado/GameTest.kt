@@ -102,32 +102,38 @@ class GameTest {
 
         inOrder.verify(mViewBinder).showCard(eq(0), any(), any())
         inOrder.verify(mViewBinder).showCard(eq(2), any(), any())
-        inOrder.verify(mViewBinder).highlightCard(0, ViewBinder.HighlightType.NotMatch)
+        //highlight only the second card
         inOrder.verify(mViewBinder).highlightCard(2, ViewBinder.HighlightType.NotMatch)
 
         inOrder.verify(mViewBinder).hideCard(0)
+        inOrder.verify(mViewBinder).highlightCard(0, ViewBinder.HighlightType.None)
         inOrder.verify(mViewBinder).hideCard(2)
+        inOrder.verify(mViewBinder).highlightCard(2, ViewBinder.HighlightType.None)
 
         inOrder.verify(mViewBinder).showCard(eq(2), any(), any())
         inOrder.verify(mViewBinder).showCard(eq(8), any(), any())
-        inOrder.verify(mViewBinder).highlightCard(2, ViewBinder.HighlightType.Match)
+        //highlight only the second card
         inOrder.verify(mViewBinder).highlightCard(8, ViewBinder.HighlightType.Match)
 
         inOrder.verify(mViewBinder).showCard(eq(9), any(), any())
         inOrder.verify(mViewBinder).showCard(eq(1), any(), any())
-        inOrder.verify(mViewBinder).highlightCard(9, ViewBinder.HighlightType.NotMatch)
+        //highlight only the second card
         inOrder.verify(mViewBinder).highlightCard(1, ViewBinder.HighlightType.NotMatch)
 
         inOrder.verify(mViewBinder).hideCard(9)
+        inOrder.verify(mViewBinder).highlightCard(9, ViewBinder.HighlightType.None)
         inOrder.verify(mViewBinder).hideCard(1)
+        inOrder.verify(mViewBinder).highlightCard(1, ViewBinder.HighlightType.None)
 
         inOrder.verify(mViewBinder).showCard(eq(4), any(), any())
         inOrder.verify(mViewBinder).showCard(eq(3), any(), any())
-        inOrder.verify(mViewBinder).highlightCard(4, ViewBinder.HighlightType.NotMatch)
+        //highlight only the second card
         inOrder.verify(mViewBinder).highlightCard(3, ViewBinder.HighlightType.NotMatch)
 
         inOrder.verify(mViewBinder).hideCard(4)
+        inOrder.verify(mViewBinder).highlightCard(4, ViewBinder.HighlightType.None)
         inOrder.verify(mViewBinder).hideCard(3)
+        inOrder.verify(mViewBinder).highlightCard(3, ViewBinder.HighlightType.None)
 
         inOrder.verifyNoMoreInteractions()
     }
@@ -153,13 +159,11 @@ class GameTest {
 
         inOrder.verify(viewBinder).showCard(eq(0), any(), any())
         inOrder.verify(viewBinder).showCard(eq(1), any(), any())
-        inOrder.verify(viewBinder).highlightCard(0, ViewBinder.HighlightType.Match)
         inOrder.verify(viewBinder).highlightCard(1, ViewBinder.HighlightType.Match)
 
         inOrder.verify(viewBinder).showCard(eq(2), any(), any())
         inOrder.verify(viewBinder).showCard(eq(3), any(), any())
 
-        inOrder.verify(viewBinder).highlightCard(2, ViewBinder.HighlightType.Match)
         inOrder.verify(viewBinder).highlightCard(3, ViewBinder.HighlightType.Match)
 
         inOrder.verify(viewBinder).showWinMessage()
@@ -195,7 +199,6 @@ class GameTest {
         inOrder.verify(viewBinder).showCard(eq(2), any(), any())
         inOrder.verify(viewBinder).showCard(eq(3), any(), any())
 
-        inOrder.verify(viewBinder).highlightCard(2, ViewBinder.HighlightType.Match)
         inOrder.verify(viewBinder).highlightCard(3, ViewBinder.HighlightType.Match)
 
         inOrder.verifyNoMoreInteractions()
