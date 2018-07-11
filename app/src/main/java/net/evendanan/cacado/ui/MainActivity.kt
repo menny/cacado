@@ -6,14 +6,29 @@ import android.support.annotation.RawRes
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayout
 import android.view.Gravity
+import android.view.View
 import android.view.WindowManager
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import net.evendanan.cacado.*
+import net.evendanan.cacado.Dealer
+import net.evendanan.cacado.EnglishCards
+import net.evendanan.cacado.Game
+import net.evendanan.cacado.HebrewCards
+import net.evendanan.cacado.MemoryCard
+import net.evendanan.cacado.NoDealer
+import net.evendanan.cacado.R
+import net.evendanan.cacado.ViewBinder
+import net.evendanan.cacado.prefs.GameSettings
 
 
 class MainActivity : AppCompatActivity() {
+
+    private val gameOwner: SettingsPresenter.GameOwner = object : SettingsPresenter.GameOwner {
+        override fun resetGame() {
+            game = Game(createDealer(), viewConnector)
+            game.start()
+        }
+    }
 
     private var viewConnector: ViewBinder = object : ViewBinder {
 
@@ -68,16 +83,19 @@ class MainActivity : AppCompatActivity() {
                 setGravity(Gravity.CENTER, 0, 0)
                 show()
             }
-            
+
             for (childIndex in 0 until gridLayout.childCount) {
                 (gridLayout.getChildAt(childIndex).tag as RevealHideCardHandler).highlightCard(ViewBinder.HighlightType.Match)
             }
         }
     }
 
-    private var game = Game(NoDealer, viewConnector)
+    private val gridLayout by lazy { findViewById<GridLayout>(R.id.cards_grid) }
+    private val prefs by lazy { GameSettings(applicationContext) }
+    private val settingsPane by lazy { findViewById<View>(R.id.game_settings_layout) }
+    private val settingsPresenter by lazy { SettingsPresenter(gameOwner, settingsPane, gridLayout, findViewById<View>(R.id.settings_button), prefs) }
 
-    private lateinit var gridLayout: GridLayout
+    private var game = Game(NoDealer, viewConnector)
 
     private var mediaPlayer = MediaPlayer()
 
@@ -86,12 +104,22 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        findViewById<Button>(R.id.start_button).setOnClickListener {
-            game = Game(HebrewCards(6), viewConnector)
-            game.start()
+        findViewById<View>(R.id.start_button).setOnClickListener {
+            gameOwner.resetGame()
         }
 
-        gridLayout = findViewById(R.id.cards_grid)
+        findViewById<View>(R.id.settings_button).setOnClickListener {
+            settingsPresenter.flipPaneVisibility()
+        }
+
+        gameOwner.resetGame()
+    }
+
+    private fun createDealer(): Dealer = prefs.lettersCount.letters.let {
+        when (prefs.language) {
+            GameSettings.Language.Hebrew -> HebrewCards(it)
+            GameSettings.Language.English -> EnglishCards(it)
+        }
     }
 
     fun playAudio(@RawRes audio: Int) {

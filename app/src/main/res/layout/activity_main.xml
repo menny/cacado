@@ -1,36 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".ui.MainActivity">
 
     <LinearLayout
+        android:id="@+id/main_buttons_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:orientation="horizontal">
 
-        <Button
+        <ImageView
             android:id="@+id/start_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="Start" />
+            android:clickable="true"
+            android:contentDescription="@string/start_game_button"
+            android:focusable="true"
+            android:src="@drawable/ic_action_start_game" />
+
+        <ImageView
+            android:id="@+id/settings_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:clickable="true"
+            android:contentDescription="@string/game_settings_button"
+            android:focusable="true"
+            android:src="@drawable/ic_action_open_game_settings" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/game_description"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp" />
     </LinearLayout>
 
     <android.support.v7.widget.GridLayout
-        android:clipChildren="false"
         android:id="@+id/cards_grid"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/main_buttons_layout"
         android:animateLayoutChanges="true"
-
         android:background="@color/table"
+        android:clipChildren="false" />
 
-        android:elevation="8dp">
+    <LinearLayout
+        android:id="@+id/game_settings_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/main_buttons_layout"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-    </android.support.v7.widget.GridLayout>
-</LinearLayout>
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/languages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="12dp"
+            android:entries="@array/languages_entries"
+            android:gravity="center_horizontal" />
+
+        <android.support.v7.widget.AppCompatSeekBar
+            android:id="@+id/level"
+            style="@style/Widget.AppCompat.SeekBar.Discrete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:max="4" />
+    </LinearLayout>
+</RelativeLayout>

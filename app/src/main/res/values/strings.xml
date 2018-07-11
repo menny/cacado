@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Cacado</string>
+    <string name="start_game_button">Start</string>
+    <string name="game_settings_button">Settings</string>
+
+    <string-array name="languages_entries">
+        <item>English</item>
+        <item>עברית</item>
+    </string-array>
 </resources>

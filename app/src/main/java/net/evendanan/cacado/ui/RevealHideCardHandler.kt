@@ -28,7 +28,6 @@ internal class RevealHideCardHandler(context: Context, rootView: View, val memor
         revealCardAnimation.setTarget(cardFront)
         hideCardAnimation.start()
         revealCardAnimation.start()
-
     }
 
     fun hideCard() {
